@@ -65,4 +65,11 @@ public class GenericDAO<T> {
             return session.createQuery("from " + entityClass.getName(), entityClass).list();
         }
     }
+    
+    public long contar() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT COUNT(e) FROM " + entityClass.getName() + " e";
+            return session.createQuery(hql, Long.class).uniqueResult();
+        }
+    }
 }

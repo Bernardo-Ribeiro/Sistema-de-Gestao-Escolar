@@ -5,75 +5,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Alunos - SGE</title>
+    <title>Gerenciamento de Alunos - EduGestão</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="${pageContext.request.contextPath}/" class="navbar-brand">📚 SGE - Sistema de Gestão Escolar</a>
-        <ul class="navbar-menu">
-            <li><a href="${pageContext.request.contextPath}/">Dashboard</a></li>
-            <li><a href="${pageContext.request.contextPath}/alunos?action=list" class="active">Alunos</a></li>
-            <li><a href="${pageContext.request.contextPath}/cursos?action=list">Cursos</a></li>
-            <li><a href="${pageContext.request.contextPath}/matriculas?action=list">Matrículas</a></li>
-        </ul>
-    </nav>
+<body class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon-small">🎓</div>
+                <h2 class="sidebar-title">EduGestão</h2>
+            </div>
+            <button class="sidebar-toggle">☰</button>
+        </div>
 
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h1 class="card-title">👨‍🎓 Gerenciamento de Alunos</h1>
-                <a href="${pageContext.request.contextPath}/alunos?action=new" class="btn btn-primary">➕ Novo Aluno</a>
+        <nav class="sidebar-menu">
+            <a href="${pageContext.request.contextPath}/" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Menu Principal</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/alunos?action=list" class="menu-item active">
+                <span class="menu-icon">👨‍🎓</span>
+                <span class="menu-text">Alunos</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/cursos?action=list" class="menu-item">
+                <span class="menu-icon">📚</span>
+                <span class="menu-text">Cursos</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/aulas?action=list" class="menu-item">
+                <span class="menu-icon">📖</span>
+                <span class="menu-text">Aulas</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/matriculas?action=list" class="menu-item">
+                <span class="menu-icon">✅</span>
+                <span class="menu-text">Matrículas</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="${pageContext.request.contextPath}/login.jsp" class="menu-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-brand">
+                <div class="logo-icon-small">🎓</div>
+                <h1 class="header-title">EduGestão</h1>
+            </div>
+            <div class="header-user">
+                <img src="https://ui-avatars.com/api/?name=John&background=0ea5e9&color=fff" alt="User" class="user-avatar">
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Page Title -->
+            <div class="page-header">
+                <h1 class="page-title">Gerenciamento de Alunos</h1>
             </div>
 
-            <c:if test="${not empty alunos}">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Matrícula</th>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Telefone</th>
-                                <th class="actions">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="aluno" items="${alunos}">
+            <!-- Cadastro de Aluno Form -->
+            <div class="form-card">
+                <h2 class="form-card-title">Cadastro de Aluno</h2>
+                
+                <form action="${pageContext.request.contextPath}/alunos" method="post" id="formAluno">
+                    <input type="hidden" name="action" value="save" id="formAction">
+                    <input type="hidden" name="id" value="" id="alunoId">
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="nome">Nome do Aluno</label>
+                            <input type="text" 
+                                   id="nome" 
+                                   name="nome" 
+                                   class="form-control" 
+                                   placeholder="Ex: Maria Santos"
+                                   required>
+                        </div>
+                        <div class="form-col">
+                            <label for="matricula">Número de Matrícula</label>
+                            <input type="text" 
+                                   id="matricula" 
+                                   name="matricula" 
+                                   class="form-control" 
+                                   placeholder="Ex: 2024001"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="email">E-mail do Aluno</label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   class="form-control" 
+                                   placeholder="Ex: maria.santos@email.com"
+                                   required>
+                        </div>
+                        <div class="form-col">
+                            <label for="telefone">Telefone do Aluno</label>
+                            <input type="tel" 
+                                   id="telefone" 
+                                   name="telefone" 
+                                   class="form-control" 
+                                   placeholder="Ex: (XX) XXXXX-XXXX">
+                        </div>
+                    </div>
+
+                    <div class="form-actions-inline">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="editarMode()">Editar</button>
+                        <button type="button" class="btn btn-danger" onclick="limparForm()">Excluir</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Alunos Registrados -->
+            <div class="table-card">
+                <h2 class="table-card-title">Alunos Registrados</h2>
+                
+                <c:if test="${not empty alunos}">
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <td>${aluno.id}</td>
-                                    <td><span class="badge badge-primary">${aluno.matricula}</span></td>
-                                    <td>${aluno.nome}</td>
-                                    <td>${aluno.email}</td>
-                                    <td>${aluno.telefone}</td>
-                                    <td class="actions">
-                                        <a href="${pageContext.request.contextPath}/alunos?action=edit&id=${aluno.id}" 
-                                           class="btn btn-secondary btn-sm">✏️ Editar</a>
-                                        <a href="${pageContext.request.contextPath}/alunos?action=delete&id=${aluno.id}" 
-                                           class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Tem certeza que deseja excluir este aluno?')">🗑️ Excluir</a>
-                                    </td>
+                                    <th>NOME</th>
+                                    <th>MATRÍCULA</th>
+                                    <th>E-MAIL</th>
+                                    <th>TELEFONE</th>
+                                    <th>AÇÕES</th>
                                 </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </c:if>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="aluno" items="${alunos}">
+                                    <tr>
+                                        <td>${aluno.nome}</td>
+                                        <td>${aluno.matricula}</td>
+                                        <td>${aluno.email}</td>
+                                        <td>${aluno.telefone}</td>
+                                        <td class="table-actions">
+                                            <button class="icon-btn icon-btn-edit" 
+                                                    onclick="carregarAluno(${aluno.id}, '${aluno.nome}', '${aluno.matricula}', '${aluno.email}', '${aluno.telefone}')"
+                                                    title="Editar">✏️</button>
+                                            <button class="icon-btn icon-btn-delete" 
+                                                    onclick="confirmarExclusao(${aluno.id})"
+                                                    title="Excluir">🗑️</button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </c:if>
 
-            <c:if test="${empty alunos}">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
-                    <p>Nenhum aluno cadastrado ainda.</p>
-                    <a href="${pageContext.request.contextPath}/alunos?action=new" class="btn btn-primary">➕ Cadastrar Primeiro Aluno</a>
-                </div>
-            </c:if>
+                <c:if test="${empty alunos}">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Nenhum aluno cadastrado ainda.</p>
+                    </div>
+                </c:if>
+            </div>
         </div>
+    </main>
 
-        <div style="margin-top: 1rem;">
-            <a href="${pageContext.request.contextPath}/" class="btn btn-outline">← Voltar ao Dashboard</a>
-        </div>
-    </div>
+    <script>
+        function carregarAluno(id, nome, matricula, email, telefone) {
+            document.getElementById('alunoId').value = id;
+            document.getElementById('nome').value = nome;
+            document.getElementById('matricula').value = matricula;
+            document.getElementById('email').value = email;
+            document.getElementById('telefone').value = telefone;
+            document.getElementById('formAction').value = 'update';
+            
+            // Scroll to form
+            document.getElementById('formAluno').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function editarMode() {
+            const id = document.getElementById('alunoId').value;
+            if (!id) {
+                alert('Selecione um aluno para editar');
+                return;
+            }
+            document.getElementById('formAction').value = 'update';
+            document.getElementById('formAluno').submit();
+        }
+
+        function limparForm() {
+            const id = document.getElementById('alunoId').value;
+            if (id) {
+                if (confirm('Deseja realmente excluir este aluno?')) {
+                    window.location.href = '${pageContext.request.contextPath}/alunos?action=delete&id=' + id;
+                }
+            } else {
+                document.getElementById('formAluno').reset();
+                document.getElementById('alunoId').value = '';
+                document.getElementById('formAction').value = 'save';
+            }
+        }
+
+        function confirmarExclusao(id) {
+            if (confirm('Tem certeza que deseja excluir este aluno?')) {
+                window.location.href = '${pageContext.request.contextPath}/alunos?action=delete&id=' + id;
+            }
+        }
+    </script>
 </body>
 </html>

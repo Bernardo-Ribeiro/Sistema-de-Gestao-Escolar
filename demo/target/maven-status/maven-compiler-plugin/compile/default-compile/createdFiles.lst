@@ -10,6 +10,7 @@ com\sge\model\Aula.class
 com\sge\dao\AdvertenciaDAO.class
 com\sge\util\HibernateUtil.class
 com\sge\dao\MatriculaDAO.class
+com\sge\controller\DashboardServlet.class
 com\sge\dao\CursoDAO.class
 com\sge\model\Advertencia.class
 com\sge\model\Matricula.class
