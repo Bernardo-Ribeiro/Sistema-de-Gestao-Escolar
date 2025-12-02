@@ -7,6 +7,20 @@
     
     <display-name>Sistema de Gestão Escolar</display-name>
     
+    <!-- Configuração de sessão -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    
+    <!-- Configuração do JSP -->
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <scripting-invalid>false</scripting-invalid>
+        </jsp-property-group>
+    </jsp-config>
+    
     <!-- Servlet padrão para arquivos estáticos -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>
@@ -32,4 +46,15 @@
         <servlet-name>default</servlet-name>
         <url-pattern>*.gif</url-pattern>
     </servlet-mapping>
+    
+    <!-- Páginas de erro -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/login.jsp</location>
+    </error-page>
+    
+    <error-page>
+        <error-code>500</error-code>
+        <location>/login.jsp</location>
+    </error-page>
 </web-app>

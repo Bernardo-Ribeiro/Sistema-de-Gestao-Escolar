@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -20,6 +21,20 @@
                 <p class="login-subtitle">Faça login para acessar o painel de gestão.</p>
             </div>
 
+            <!-- Mensagem de Erro -->
+            <c:if test="${not empty erro}">
+                <div class="alert alert-danger">
+                    <strong>⚠️ Erro:</strong> ${erro}
+                </div>
+            </c:if>
+
+            <!-- Mensagem de Sucesso (logout) -->
+            <c:if test="${not empty sucesso}">
+                <div class="alert alert-success">
+                    <strong>✓</strong> ${sucesso}
+                </div>
+            </c:if>
+
             <!-- Formulário de Login -->
             <form action="${pageContext.request.contextPath}/login" method="post" class="login-form">
                 <div class="form-group">
@@ -29,6 +44,7 @@
                            name="usuario" 
                            class="form-control" 
                            placeholder="Seu e-mail ou nome de usuário"
+                           value="${usuario != null ? usuario : ''}"
                            required>
                 </div>
 

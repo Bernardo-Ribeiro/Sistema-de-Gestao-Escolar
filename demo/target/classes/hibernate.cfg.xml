@@ -19,5 +19,6 @@
         <mapping class="com.sge.model.Matricula"/>
         <mapping class="com.sge.model.Presenca"/>
         <mapping class="com.sge.model.Advertencia"/>
+        <mapping class="com.sge.model.Usuario"/>
     </session-factory>
 </hibernate-configuration>

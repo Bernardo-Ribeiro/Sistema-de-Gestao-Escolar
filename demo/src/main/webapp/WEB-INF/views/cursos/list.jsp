@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -311,6 +311,10 @@
                 <span class="menu-icon">✅</span>
                 <span class="menu-text">Matrículas</span>
             </a>
+                        <a href="${pageContext.request.contextPath}/presencas?action=list" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">Presenças</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -335,94 +339,94 @@
         </header>
 
         <div class="clean-layout">
-        <!-- Form Section -->
-        <div class="form-section">
-            <h1 class="section-title">Cadastro de Curso</h1>
-            <p class="section-subtitle">Preencha os campos abaixo para cadastrar um novo curso ou editar um existente.</p>
-            
-            <form id="cursoForm" action="${pageContext.request.contextPath}/cursos" method="post">
-                <input type="hidden" name="action" id="formAction" value="save">
-                <input type="hidden" name="id" id="cursoId">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h1 class="section-title">Cadastro de Curso</h1>
+                <p class="section-subtitle">Preencha os campos abaixo para cadastrar um novo curso ou editar um existente.</p>
                 
-                <div class="form-group">
-                    <label for="nome" class="form-label">Nome do Curso</label>
-                    <input type="text" class="form-input" id="nome" name="nome" 
-                           placeholder="Nome do Curso" required>
-                </div>
+                <form id="cursoForm" action="${pageContext.request.contextPath}/cursos" method="post">
+                    <input type="hidden" name="action" id="formAction" value="save">
+                    <input type="hidden" name="id" id="cursoId">
+                    
+                    <div class="form-group">
+                        <label for="nome" class="form-label">Nome do Curso</label>
+                        <input type="text" class="form-input" id="nome" name="nome" 
+                            placeholder="Nome do Curso" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="descricao" class="form-label">Descrição</label>
-                    <textarea class="form-input form-textarea" id="descricao" name="descricao"
-                              placeholder="Descrição detalhada do curso..."></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-input form-textarea" id="descricao" name="descricao"
+                                placeholder="Descrição detalhada do curso..."></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="cargaHoraria" class="form-label">Carga Horária (horas)</label>
-                    <input type="number" class="form-input" id="cargaHoraria" name="cargaHoraria" 
-                           placeholder="Ex: 40" required>
-                </div>
+                    <div class="form-group">
+                        <label for="cargaHoraria" class="form-label">Carga Horária (horas)</label>
+                        <input type="number" class="form-input" id="cargaHoraria" name="cargaHoraria" 
+                            placeholder="Ex: 40" required>
+                    </div>
 
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                    <button type="button" class="btn btn-secondary" onclick="limparForm()">Limpar Formulário</button>
-                    <button type="button" class="btn btn-danger" id="btnExcluir" style="display:none;" onclick="confirmarExclusao()">Excluir Curso</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Table Section -->
-        <div class="table-section">
-            <div class="table-header">
-                <h2 class="section-title" style="margin: 0;">Cursos Cadastrados</h2>
-                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar curso...">
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="limparForm()">Limpar Formulário</button>
+                        <button type="button" class="btn btn-danger" id="btnExcluir" style="display:none;" onclick="confirmarExclusao()">Excluir Curso</button>
+                    </div>
+                </form>
             </div>
 
-            <c:choose>
-                <c:when test="${not empty cursos}">
-                    <table class="clean-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Descrição</th>
-                                <th style="text-align: right;">Carga Horária</th>
-                                <th style="text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="curso" items="${cursos}">
-                                <tr>
-                                    <td class="course-name">${curso.nome}</td>
-                                    <td>${curso.descricao}</td>
-                                    <td style="text-align: right;" class="course-hours">${curso.cargaHoraria}h</td>
-                                    <td style="text-align: center;">
-                                        <div class="action-icons">
-                                            <button class="icon-button" onclick="carregarCurso(${curso.id}, '${curso.nome}', '${curso.descricao}', ${curso.cargaHoraria})" title="Editar">
-                                                📝
-                                            </button>
-                                            <button class="icon-button delete" onclick="excluirCurso(${curso.id})" title="Excluir">
-                                                🗑️
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+            <!-- Table Section -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h2 class="section-title" style="margin: 0;">Cursos Cadastrados</h2>
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar curso...">
+                </div>
 
-                    <div class="pagination">
-                        <button class="page-btn">‹ Previous</button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">2</button>
-                        <button class="page-btn">3</button>
-                        <button class="page-btn">Next ›</button>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <p style="text-align: center; color: #64748b; padding: 2rem;">Nenhum curso cadastrado ainda.</p>
-                </c:otherwise>
-            </c:choose>
+                <c:choose>
+                    <c:when test="${not empty cursos}">
+                        <table class="clean-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th style="text-align: right;">Carga Horária</th>
+                                    <th style="text-align: center;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="curso" items="${cursos}">
+                                    <tr>
+                                        <td class="course-name">${curso.nome}</td>
+                                        <td>${curso.descricao}</td>
+                                        <td style="text-align: right;" class="course-hours">${curso.cargaHoraria}h</td>
+                                        <td style="text-align: center;">
+                                            <div class="action-icons">
+                                                <button class="icon-button" onclick="carregarCurso(${curso.id}, '${curso.nome}', '${curso.descricao}', ${curso.cargaHoraria})" title="Editar">
+                                                    📝
+                                                </button>
+                                                <button class="icon-button delete" onclick="excluirCurso(${curso.id})" title="Excluir">
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+
+                        <div class="pagination">
+                            <button class="page-btn">‹ Previous</button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">Next ›</button>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">Nenhum curso cadastrado ainda.</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
-    </div>
     </main>
 
     <script>

@@ -16,6 +16,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(com.sge.model.Matricula.class);
             configuration.addAnnotatedClass(com.sge.model.Presenca.class);
             configuration.addAnnotatedClass(com.sge.model.Advertencia.class);
+            configuration.addAnnotatedClass(com.sge.model.Usuario.class);
             sessionFactory = configuration.buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Falha na criação do SessionFactory." + ex);
