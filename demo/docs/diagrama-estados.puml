@@ -1,0 +1,83 @@
+@startuml Diagrama de Estados - Sistema de Gestão Escolar
+
+' ============================================
+' DIAGRAMA COMPORTAMENTAL - DIAGRAMA DE ESTADOS
+' ============================================
+
+skinparam backgroundColor #FEFEFE
+skinparam state {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+title Estado de uma Matrícula no Sistema
+
+[*] --> EmProcesso : Aluno se matricula no curso
+
+state EmProcesso {
+    [*] --> Cursando
+    Cursando : O aluno está frequentando as aulas
+    Cursando : Presença e notas são registradas
+    Cursando --> AguardandoAvaliacao : Curso finalizado
+    
+    state AguardandoAvaliacao {
+        [*] --> CalculandoFrequencia
+        CalculandoFrequencia : Sistema calcula frequência do aluno
+        CalculandoFrequencia --> CalculandoNota : Frequência calculada
+        CalculandoNota : Sistema calcula nota final
+        CalculandoNota --> [*] : Cálculos concluídos
+    }
+}
+
+EmProcesso --> Aprovado : Nota >= 7.0 E Frequência >= 75%
+EmProcesso --> Reprovado : Nota < 7.0 OU Frequência < 75%
+EmProcesso --> Trancado : Aluno solicita trancamento
+
+Trancado --> Cursando : Aluno retoma curso
+Trancado --> Cancelado : Cancelamento definitivo
+
+Aprovado --> [*]
+Reprovado --> [*]
+Cancelado --> [*]
+
+note right of EmProcesso
+    Situação: "CURSANDO"
+    Durante este estado:
+    - Aulas são ministradas
+    - Presenças são registradas
+    - Advertências podem ser aplicadas
+    - Notas podem ser lançadas
+end note
+
+note right of Aprovado
+    Situação: "APROVADO"
+    Condições:
+    - Nota Final >= 7.0
+    - Frequência >= 75%
+    
+    Estado final positivo
+end note
+
+note right of Reprovado
+    Situação: "REPROVADO"
+    Condições:
+    - Nota Final < 7.0, OU
+    - Frequência < 75%
+    
+    Estado final negativo
+end note
+
+note right of Trancado
+    Situação: "TRANCADO"
+    Aluno pode retornar
+    ou cancelar definitivamente
+end note
+
+note right of Cancelado
+    Situação: "CANCELADO"
+    Cancelamento definitivo
+    da matrícula
+end note
+
+@enduml

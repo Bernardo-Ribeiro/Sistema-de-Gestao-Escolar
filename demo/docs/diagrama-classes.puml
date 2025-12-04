@@ -1,0 +1,282 @@
+@startuml Diagrama de Classes - Sistema de Gestão Escolar
+
+' ============================================
+' DIAGRAMA ESTRUTURAL - DIAGRAMA DE CLASSES
+' ============================================
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FEFEFE
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+package "com.sge.model" {
+    
+    class Aluno {
+        - id: Long
+        - nome: String
+        - matricula: String
+        - email: String
+        - telefone: String
+        - matriculas: List<Matricula>
+        - advertencias: List<Advertencia>
+        + Aluno()
+        + Aluno(nome, matricula, email, telefone)
+        + getId(): Long
+        + setId(id: Long): void
+        + getNome(): String
+        + setNome(nome: String): void
+        + getMatricula(): String
+        + setMatricula(matricula: String): void
+        + getEmail(): String
+        + setEmail(email: String): void
+        + getTelefone(): String
+        + setTelefone(telefone: String): void
+        + getMatriculas(): List<Matricula>
+        + setMatriculas(matriculas: List<Matricula>): void
+        + getAdvertencias(): List<Advertencia>
+        + setAdvertencias(advertencias: List<Advertencia>): void
+    }
+    
+    class Curso {
+        - id: Long
+        - nome: String
+        - descricao: String
+        - cargaHoraria: int
+        - matriculas: List<Matricula>
+        - aulas: List<Aula>
+        + Curso()
+        + Curso(nome, descricao, cargaHoraria)
+        + getId(): Long
+        + setId(id: Long): void
+        + getNome(): String
+        + setNome(nome: String): void
+        + getDescricao(): String
+        + setDescricao(descricao: String): void
+        + getCargaHoraria(): int
+        + setCargaHoraria(cargaHoraria: int): void
+        + getMatriculas(): List<Matricula>
+        + setMatriculas(matriculas: List<Matricula>): void
+        + getAulas(): List<Aula>
+        + setAulas(aulas: List<Aula>): void
+    }
+    
+    class Matricula {
+        - id: Long
+        - aluno: Aluno
+        - curso: Curso
+        - dataMatricula: LocalDate
+        - notaFinal: Double
+        - frequencia: Double
+        - situacao: String
+        - presencas: List<Presenca>
+        + Matricula()
+        + Matricula(aluno, curso)
+        + getId(): Long
+        + setId(id: Long): void
+        + getAluno(): Aluno
+        + setAluno(aluno: Aluno): void
+        + getCurso(): Curso
+        + setCurso(curso: Curso): void
+        + getDataMatricula(): LocalDate
+        + setDataMatricula(dataMatricula: LocalDate): void
+        + getNotaFinal(): Double
+        + setNotaFinal(notaFinal: Double): void
+        + getFrequencia(): Double
+        + setFrequencia(frequencia: Double): void
+        + getSituacao(): String
+        + setSituacao(situacao: String): void
+        + getPresencas(): List<Presenca>
+        + setPresencas(presencas: List<Presenca>): void
+    }
+    
+    class Aula {
+        - id: Long
+        - titulo: String
+        - data: LocalDate
+        - duracao: int
+        - curso: Curso
+        + Aula()
+        + Aula(titulo, data, duracao, curso)
+        + getId(): Long
+        + setId(id: Long): void
+        + getTitulo(): String
+        + setTitulo(titulo: String): void
+        + getData(): LocalDate
+        + setData(data: LocalDate): void
+        + getDuracao(): int
+        + setDuracao(duracao: int): void
+        + getCurso(): Curso
+        + setCurso(curso: Curso): void
+    }
+    
+    class Presenca {
+        - id: Long
+        - matricula: Matricula
+        - aula: Aula
+        - presente: boolean
+        + Presenca()
+        + Presenca(matricula, aula, presente)
+        + getId(): Long
+        + setId(id: Long): void
+        + getMatricula(): Matricula
+        + setMatricula(matricula: Matricula): void
+        + getAula(): Aula
+        + setAula(aula: Aula): void
+        + isPresente(): boolean
+        + setPresente(presente: boolean): void
+    }
+    
+    class Advertencia {
+        - id: Long
+        - aluno: Aluno
+        - data: LocalDate
+        - motivo: String
+        - observacoes: String
+        + Advertencia()
+        + Advertencia(aluno, motivo)
+        + getId(): Long
+        + setId(id: Long): void
+        + getAluno(): Aluno
+        + setAluno(aluno: Aluno): void
+        + getData(): LocalDate
+        + setData(data: LocalDate): void
+        + getMotivo(): String
+        + setMotivo(motivo: String): void
+        + getObservacoes(): String
+        + setObservacoes(observacoes: String): void
+    }
+}
+
+package "com.sge.dao" {
+    
+    abstract class GenericDAO<T> {
+        - entityClass: Class<T>
+        + GenericDAO(entityClass: Class<T>)
+        + salvar(entity: T): void
+        + atualizar(entity: T): void
+        + excluir(id: Long): void
+        + buscarPorId(id: Long): T
+        + listarTodos(): List<T>
+        + contar(): long
+    }
+    
+    class AlunoDAO {
+        + AlunoDAO()
+        + buscarUltimos(limit: int): List<Aluno>
+    }
+    
+    class CursoDAO {
+        + CursoDAO()
+    }
+    
+    class MatriculaDAO {
+        + MatriculaDAO()
+    }
+    
+    class AulaDAO {
+        + AulaDAO()
+    }
+    
+    class PresencaDAO {
+        + PresencaDAO()
+    }
+    
+    class AdvertenciaDAO {
+        + AdvertenciaDAO()
+    }
+}
+
+package "com.sge.controller" {
+    
+    class AlunoServlet {
+        - alunoDAO: AlunoDAO
+        + doGet(request, response): void
+        + doPost(request, response): void
+        - listarAlunos(request, response): void
+        - mostrarFormularioNovo(request, response): void
+        - mostrarFormularioEdicao(request, response): void
+        - salvarAluno(request, response): void
+        - atualizarAluno(request, response): void
+        - deletarAluno(request, response): void
+    }
+    
+    class CursoServlet {
+        - cursoDAO: CursoDAO
+        + doGet(request, response): void
+        + doPost(request, response): void
+        - listarCursos(request, response): void
+        - mostrarFormularioNovo(request, response): void
+        - mostrarFormularioEdicao(request, response): void
+        - salvarCurso(request, response): void
+        - atualizarCurso(request, response): void
+        - deletarCurso(request, response): void
+    }
+    
+    class DashboardServlet {
+        - alunoDAO: AlunoDAO
+        - cursoDAO: CursoDAO
+        - matriculaDAO: MatriculaDAO
+        - advertenciaDAO: AdvertenciaDAO
+        + doGet(request, response): void
+    }
+}
+
+package "com.sge.util" {
+    
+    class HibernateUtil {
+        - {static} sessionFactory: SessionFactory
+        + {static} getSessionFactory(): SessionFactory
+    }
+}
+
+' Relacionamentos entre Models
+Aluno "1" -- "0..*" Matricula : possui
+Curso "1" -- "0..*" Matricula : tem
+Aluno "1" -- "0..*" Advertencia : recebe
+Curso "1" -- "0..*" Aula : contém
+Matricula "1" -- "0..*" Presenca : registra
+Aula "1" -- "0..*" Presenca : tem
+
+' Herança dos DAOs
+GenericDAO <|-- AlunoDAO
+GenericDAO <|-- CursoDAO
+GenericDAO <|-- MatriculaDAO
+GenericDAO <|-- AulaDAO
+GenericDAO <|-- PresencaDAO
+GenericDAO <|-- AdvertenciaDAO
+
+' Dependências dos Controllers
+AlunoServlet ..> AlunoDAO : usa
+CursoServlet ..> CursoDAO : usa
+DashboardServlet ..> AlunoDAO : usa
+DashboardServlet ..> CursoDAO : usa
+DashboardServlet ..> MatriculaDAO : usa
+DashboardServlet ..> AdvertenciaDAO : usa
+
+' Dependências dos DAOs com Models
+AlunoDAO ..> Aluno : gerencia
+CursoDAO ..> Curso : gerencia
+MatriculaDAO ..> Matricula : gerencia
+AulaDAO ..> Aula : gerencia
+PresencaDAO ..> Presenca : gerencia
+AdvertenciaDAO ..> Advertencia : gerencia
+
+' Uso do HibernateUtil
+GenericDAO ..> HibernateUtil : usa
+
+note right of GenericDAO
+    Classe genérica que fornece
+    operações CRUD básicas
+    para todas as entidades
+end note
+
+note right of Matricula
+    Representa a associação
+    entre Aluno e Curso
+    com informações acadêmicas
+end note
+
+@enduml

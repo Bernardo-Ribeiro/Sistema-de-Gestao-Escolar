@@ -1,0 +1,170 @@
+@startuml Diagrama de Sequência - Sistema de Gestão Escolar
+
+' ============================================
+' DIAGRAMA DE INTERAÇÃO - DIAGRAMA DE SEQUÊNCIA
+' ============================================
+
+skinparam backgroundColor #FEFEFE
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor White
+}
+
+title Fluxo de Cadastro e Visualização de Aluno
+
+actor Usuario as "Usuário\n(Administrador)"
+participant Browser as "Navegador"
+participant AlunoServlet as "AlunoServlet"
+participant AlunoDAO as "AlunoDAO"
+participant GenericDAO as "GenericDAO<Aluno>"
+participant HibernateUtil as "HibernateUtil"
+database Database as "Banco de Dados\nMySQL"
+participant JSP as "JSP\n(list.jsp)"
+
+== Acesso à Lista de Alunos ==
+
+Usuario -> Browser : Acessa /alunos
+activate Browser
+
+Browser -> AlunoServlet : GET /alunos
+activate AlunoServlet
+
+AlunoServlet -> AlunoServlet : doGet(request, response)
+AlunoServlet -> AlunoServlet : listarAlunos()
+
+AlunoServlet -> AlunoDAO : listarTodos()
+activate AlunoDAO
+
+AlunoDAO -> GenericDAO : listarTodos()
+activate GenericDAO
+
+GenericDAO -> HibernateUtil : getSessionFactory()
+activate HibernateUtil
+HibernateUtil --> GenericDAO : SessionFactory
+deactivate HibernateUtil
+
+GenericDAO -> Database : SELECT * FROM Aluno
+activate Database
+Database --> GenericDAO : ResultSet
+deactivate Database
+
+GenericDAO --> AlunoDAO : List<Aluno>
+deactivate GenericDAO
+
+AlunoDAO --> AlunoServlet : List<Aluno>
+deactivate AlunoDAO
+
+AlunoServlet -> AlunoServlet : request.setAttribute("alunos", alunos)
+AlunoServlet -> JSP : forward(request, response)
+activate JSP
+
+JSP -> JSP : Renderiza lista de alunos
+JSP --> Browser : HTML com lista de alunos
+deactivate JSP
+deactivate AlunoServlet
+
+Browser --> Usuario : Exibe lista de alunos
+deactivate Browser
+
+== Cadastro de Novo Aluno ==
+
+Usuario -> Browser : Clica em "Novo Aluno"
+activate Browser
+
+Browser -> AlunoServlet : GET /alunos?action=new
+activate AlunoServlet
+
+AlunoServlet -> AlunoServlet : doGet(request, response)
+AlunoServlet -> AlunoServlet : mostrarFormularioNovo()
+
+AlunoServlet -> JSP : forward para form.jsp
+activate JSP
+JSP --> Browser : HTML com formulário vazio
+deactivate JSP
+deactivate AlunoServlet
+
+Browser --> Usuario : Exibe formulário de cadastro
+deactivate Browser
+
+Usuario -> Browser : Preenche dados e clica em "Salvar"
+activate Browser
+note right
+    Dados:
+    - Nome: "João Silva"
+    - Matrícula: "2024001"
+    - Email: "joao@email.com"
+    - Telefone: "11999999999"
+end note
+
+Browser -> AlunoServlet : POST /alunos?action=save\n(dados do formulário)
+activate AlunoServlet
+
+AlunoServlet -> AlunoServlet : doPost(request, response)
+AlunoServlet -> AlunoServlet : salvarAluno()
+
+AlunoServlet -> AlunoServlet : Cria novo Aluno\ncom dados do request
+
+AlunoServlet -> AlunoDAO : salvar(aluno)
+activate AlunoDAO
+
+AlunoDAO -> GenericDAO : salvar(aluno)
+activate GenericDAO
+
+GenericDAO -> HibernateUtil : getSessionFactory()
+activate HibernateUtil
+HibernateUtil --> GenericDAO : SessionFactory
+deactivate HibernateUtil
+
+GenericDAO -> GenericDAO : session.beginTransaction()
+
+GenericDAO -> Database : INSERT INTO Aluno\n(nome, matricula, email, telefone)
+activate Database
+Database --> GenericDAO : ID gerado
+deactivate Database
+
+GenericDAO -> GenericDAO : transaction.commit()
+GenericDAO --> AlunoDAO : void
+deactivate GenericDAO
+
+AlunoDAO --> AlunoServlet : void
+deactivate AlunoDAO
+
+AlunoServlet -> Browser : sendRedirect("/alunos?action=list")
+deactivate AlunoServlet
+
+Browser -> AlunoServlet : GET /alunos?action=list
+activate AlunoServlet
+
+AlunoServlet -> AlunoDAO : listarTodos()
+activate AlunoDAO
+AlunoDAO -> Database : SELECT * FROM Aluno
+activate Database
+Database --> AlunoDAO : ResultSet (incluindo novo aluno)
+deactivate Database
+AlunoDAO --> AlunoServlet : List<Aluno>
+deactivate AlunoDAO
+
+AlunoServlet -> JSP : forward para list.jsp
+activate JSP
+JSP --> Browser : HTML com lista atualizada
+deactivate JSP
+deactivate AlunoServlet
+
+Browser --> Usuario : Exibe lista com novo aluno
+deactivate Browser
+
+note over Usuario, Database
+    O mesmo padrão de interação é seguido para:
+    - CursoServlet (gestão de cursos)
+    - DashboardServlet (exibição de estatísticas)
+    
+    Todos utilizam a arquitetura MVC:
+    Controller -> DAO -> GenericDAO -> Hibernate -> Database
+end note
+
+@enduml
