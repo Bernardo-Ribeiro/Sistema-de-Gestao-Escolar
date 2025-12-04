@@ -21,6 +21,7 @@ com\sge\controller\AulaServlet.class
 com\sge\model\Aula.class
 com\sge\dao\AdvertenciaDAO.class
 com\sge\controller\DebugUsuariosServlet.class
+com\sge\listener\DatabaseInitializer.class
 com\sge\filter\AuthFilter.class
 com\sge\dao\CursoDAO.class
 com\sge\util\PasswordUtil.class
